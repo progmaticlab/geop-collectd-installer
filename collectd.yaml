@@ -1,8 +1,6 @@
 ---
 
 - name: setup collectd
-  connection: ansible.netcommon.network_cli
-  gather_facts: false
   hosts: all
   tasks:
 
