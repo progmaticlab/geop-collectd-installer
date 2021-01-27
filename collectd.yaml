@@ -1,0 +1,24 @@
+---
+
+- name: setup collectd
+  connection: ansible.netcommon.network_cli
+  gather_facts: false
+  hosts: all
+  tasks:
+
+  - name: Install collectd
+    package:
+      name: collectd
+      state: present
+
+
+  - name: create collectd.conf
+    copy:
+      src: collectd.conf
+      dest: /etc/collectd/collectd.conf
+
+  - name: restart collectd
+    ansible.builtin.systemd:
+      state: restarted
+      daemon_reload: yes
+      name: collectd
