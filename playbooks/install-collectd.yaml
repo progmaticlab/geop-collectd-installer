@@ -3,8 +3,8 @@
 - name: setup collectd
   hosts: all
   vars:
-    collectd_server: "localhost"
-    collectd_server_port: "25826"
+    collectd_server: '"localhost"'
+    collectd_server_port: '"25826"'
   tasks:
 
   - name: install collectd
