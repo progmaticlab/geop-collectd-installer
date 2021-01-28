@@ -5,6 +5,7 @@ all:
       hosts:
         127.0.0.1:
       vars:
+        ansible_connection: local
         telegraf_server: '"localhost"'
         telegraf_server_port: '"25826"'
         vm_id: 'vm_id_'
