@@ -2,16 +2,19 @@
 
 - name: setup collectd
   hosts: all
+  vars:
+    collectd_server: "localhost"
+    collectd_server_port: "25826"
   tasks:
 
-  - name: Install collectd
+  - name: install collectd
     package:
       name: collectd
       state: present
 
   - name: create collectd.conf
-    copy:
-      src: roles/collectd/templates/collectd.conf
+    template:
+      src: roles/collectd/templates/collectd.j2
       dest: /etc/collectd/collectd.conf
 
   - name: restart collectd

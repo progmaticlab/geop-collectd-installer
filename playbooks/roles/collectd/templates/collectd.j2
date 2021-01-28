@@ -3,20 +3,11 @@ FQDNLookup true
 BaseDir "/var/lib/collectd"
 PluginDir "/usr/lib/collectd"
 TypesDB "/usr/share/collectd/types.db" "/etc/collectd/my_types.db"
+
 LoadPlugin logfile
 LoadPlugin syslog
-<Plugin logfile>
-	LogLevel "info"
-        File "/var/log/collectd.log"
-        Timestamp true
-</Plugin>
-<Plugin syslog>
-	LogLevel info
-</Plugin>
 LoadPlugin network
-<Plugin network>
-        Server "localhost" "25826"
-</Plugin>
+
 LoadPlugin cpu
 LoadPlugin df
 LoadPlugin disk
@@ -24,6 +15,17 @@ LoadPlugin interface
 LoadPlugin load
 LoadPlugin memory
 LoadPlugin swap
+<Plugin logfile>
+    LogLevel "info"
+        File "/var/log/collectd.log"
+        Timestamp true
+</Plugin>
+<Plugin syslog>
+    LogLevel info
+</Plugin>
+<Plugin network>
+        Server {{ collectd_server }} {{ collectd_server_port }}
+</Plugin>
 <Plugin cpu>
 	ReportByCpu true
 	ReportByState true
