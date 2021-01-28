@@ -1,24 +1,7 @@
 ---
 
 - name: setup collectd
-  hosts: all
-  vars:
-    collectd_server: '"localhost"'
-    collectd_server_port: '"25826"'
-  tasks:
-
-  - name: install collectd
-    package:
-      name: collectd
-      state: present
-
-  - name: create collectd.conf
-    template:
-      src: roles/collectd/templates/collectd.j2
-      dest: /etc/collectd/collectd.conf
-
-  - name: restart collectd
-    ansible.builtin.systemd:
-      state: restarted
-      daemon_reload: yes
-      name: collectd
+  hosts: collectd
+  gather_facts: no
+  roles:
+    - collectd
