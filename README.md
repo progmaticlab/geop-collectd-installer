@@ -6,6 +6,6 @@
 
 
 ```
-ansible-playbook playbooks/install-collectd.yaml -i hosts.yaml
+ansible-playbook --connection=local playbooks/install-collectd.yaml -i hosts.yaml
 ```
 

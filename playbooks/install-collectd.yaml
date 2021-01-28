@@ -2,6 +2,6 @@
 
 - name: setup collectd
   hosts: collectd
-  gather_facts: no
+  gather_facts: yes
   roles:
     - collectd
