@@ -11,7 +11,7 @@
 
   - name: create collectd.conf
     copy:
-      src: roles/templates/collectd.conf
+      src: roles/collectd/templates/collectd.conf
       dest: /etc/collectd/collectd.conf
 
   - name: restart collectd
