@@ -27,9 +27,10 @@ LoadPlugin swap
         Server {{ telegraf_server }} {{ telegraf_server_port }}
 </Plugin>
 <Plugin cpu>
-	ReportByCpu true
-	ReportByState true
-	ValuesPercentage true
+        ReportByCpu false
+        ReportByState false
+        ReportNumCpu true
+        ValuesPercentage true
 </Plugin>
 <Plugin df>
 	FSType rootfs
