@@ -5,13 +5,39 @@
     name: collectd
     state: present
 
+- name: install collectd-python
+  package:
+    name: collectd-utils
+    state: present
+
 - name: create collectd.conf
   template:
     src: collectd.j2
     dest: /etc/collectd/collectd.conf
+
+- name: create /opt/collectd_plugins
+  ansible.builtin.file:
+    path: /opt/collectd_plugins
+    state: directory
+    mode: '0755'
+
+- name: create vm_cpu plugin
+  copy:
+    src: vm_cpu.py
+    dest: /opt/collectd_plugins/vm_cpu.py
+
+- name: add vm_cpu_* types to types.db
+  blockinfile:
+    path: /usr/share/collectd/types.db
+    insertafter: EOF
+    block: |
+      vm_cpu_num              value:GAUGE:U:U
+      vm_cpu_usage            value:GAUGE:U:U
+      vm_cpu_shortage         value:GAUGE:U:U
 
 - name: restart collectd
   ansible.builtin.systemd:
     state: restarted
     daemon_reload: yes
     name: collectd
+

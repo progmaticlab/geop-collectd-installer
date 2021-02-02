@@ -15,6 +15,15 @@ LoadPlugin interface
 LoadPlugin load
 LoadPlugin memory
 LoadPlugin swap
+
+LoadPlugin python
+<Plugin python>
+    ModulePath "/opt/collectd_plugins"
+    Import "vm_cpu"
+    <Module vm_cpu>
+        Path "/proc/stat" 
+    </Module>
+</Plugin>
 <Plugin logfile>
     LogLevel "info"
         File "/var/log/collectd.log"
