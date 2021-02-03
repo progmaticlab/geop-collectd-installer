@@ -27,6 +27,10 @@ LoadPlugin python
     <Module vm_mem>
         Path "/proc/meminfo"
     </Module>
+    Import "vm_disk"
+    <Module vm_disk>
+        Path "/proc/mounts"
+    </Module>
 </Plugin>
 
 <Plugin logfile>

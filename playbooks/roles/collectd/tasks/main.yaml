@@ -21,22 +21,57 @@
     state: directory
     mode: '0755'
 
+
 - name: create vm_cpu plugin
   copy:
     src: vm_cpu.py
     dest: /opt/collectd_plugins/vm_cpu.py
+
+- name: create vm_mem plugin
+  copy:
+    src: vm_mem.py
+    dest: /opt/collectd_plugins/vm_mem.py
+
+- name: create vm_disk plugin
+  template:
+    src: vm_disk.j2
+    dest: /opt/collectd_plugins/vm_mem.py
+
 
 - name: add vm_cpu_* types to types.db
   blockinfile:
     path: /usr/share/collectd/types.db
     insertafter: EOF
     block: |
-      vm_cpu_num              value:GAUGE:U:U
+      ####
+      vm_cpu_num              value:GAUGE:0:U
       vm_cpu_usage            value:GAUGE:U:U
       vm_cpu_shortage         value:GAUGE:U:U
+      ####
       vm_mem_size             value:GAUGE:U:U
       vm_mem_usage            value:GAUGE:U:U
       vm_mem_shortage         value:GAUGE:U:U
+      ####
+      ssd_disk_size            value:GAUGE:U:U
+      ssd_disk_throughput      value:GAUGE:U:U
+      ssd_disk_iops            value:GAUGE:U:U
+      ssd_disk_latency         value:GAUGE:U:U
+      ssd_disk_usage           value:GAUGE:U:U
+      hdd_disk_size            value:GAUGE:U:U
+      hdd_disk_throughput      value:GAUGE:U:U
+      hdd_disk_iops            value:GAUGE:U:U
+      hdd_disk_latency         value:GAUGE:U:U
+      hdd_disk_usage           value:GAUGE:U:U
+      sata_disk_size            value:GAUGE:U:U
+      sata_disk_throughput      value:GAUGE:U:U
+      sata_disk_iops            value:GAUGE:U:U
+      sata_disk_latency         value:GAUGE:U:U
+      sata_disk_usage           value:GAUGE:U:U
+      ####
+      vm_net_input_rate           value:GAUGE:U:U
+      vm_net_output_rate          value:GAUGE:U:U
+      vm_net_input_rate_provided  value:GAUGE:U:U
+      vm_net_output_rate_provided value:GAUGE:U:U
 
 
 - name: collectd bug fix

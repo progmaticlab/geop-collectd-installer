@@ -1,0 +1,67 @@
+import collectd
+import re
+import os
+
+
+def config_func(config):
+    path_set = False
+
+    for node in config.children:
+        key = node.key.lower()
+        val = node.values[0]
+
+        if key == 'path':
+            global PATH
+            PATH = val
+            path_set = True
+        else:
+            collectd.info('vm_disk plugin: Unknown config key "%s"' % key)
+
+    if path_set:
+        collectd.info('vm_disk plugin: Using overridden path %s' % PATH)
+    else:
+        collectd.info('vm_disk plugin: Using default path %s' % PATH)
+
+
+def read_func():
+    sys_arr = []
+    sys_str = ''
+    sys_size = 0
+    sys_usage = 0
+    GB = 1024**2
+
+    sys_type = 0
+    sys_name = 0
+
+    type_map = {{ disk_type_map }}
+
+    with open('/proc/mounts', 'r') as f:
+        for line in f.read().split('\n'):
+            if re.search(r'^\/ *', line):
+                sys_arr = line.split()
+                sys_str = os.statvfs(sys_arr[1])
+                sys_size = (sys_str.f_bsize * sys_str.f_blocks) / GB
+                sys_usage = (sys_str.f_blocks - sys_str.f_bfree) / GB
+
+                for key in type_map.keys():
+                    if re.search(key, sys_arr[0]):
+                        sys_type = type_map.get(key)
+                        break
+
+                sys_name = 'disk_' + re.findall(r"\d+", sys_arr[0])[-1]
+
+                collectd.Values(plugin='vm_disk',
+                    type_instance=sys_name,
+                    type=f'{sys_type}_disk_size',
+                    values=[sys_size]).dispatch()
+
+                collectd.Values(plugin='vm_disk',
+                    type_instance=sys_name,
+                    type=f'{sys_type}_disk_usage',
+                    values=[sys_usage]).dispatch()
+
+
+collectd.register_config(config_func)
+collectd.register_read(read_func)
+
+
