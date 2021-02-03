@@ -74,12 +74,11 @@
 
 
 - name: collectd bug fix
-  ansible.builtin.lineinfile:
+  blockinfile:
     path: /etc/default/collectd
-    line: 'LD_PRELOAD=/usr/lib/python3.8/config-3.8-x86_64-linux-gnu/libpython3.8.so'
-    insertbefore: EOF
-
-
+    insertafter: EOF
+    block: 'LD_PRELOAD=/usr/lib/python3.8/config-3.8-x86_64-linux-gnu/libpython3.8.so'
+      
 - name: restart collectd
   ansible.builtin.systemd:
     state: restarted
