@@ -37,7 +37,6 @@
     src: vm_disk.j2
     dest: /opt/collectd_plugins/vm_disk.py
 
-
 - name: add vm_cpu_* types to types.db
   blockinfile:
     path: /usr/share/collectd/types.db
@@ -75,10 +74,10 @@
 
 
 - name: collectd bug fix
-    lineinfile:
-      path: /etc/default/collectd
-      line: LD_PRELOAD=/usr/lib/python3.8/config-3.8-x86_64-linux-gnu/libpython3.8.so
-      insertbefore: EOF
+  ansible.builtin.lineinfile:
+    path: /etc/default/collectd
+    line: 'LD_PRELOAD=/usr/lib/python3.8/config-3.8-x86_64-linux-gnu/libpython3.8.so'
+    insertbefore: EOF
 
 
 - name: restart collectd
