@@ -34,6 +34,17 @@
       vm_cpu_num              value:GAUGE:U:U
       vm_cpu_usage            value:GAUGE:U:U
       vm_cpu_shortage         value:GAUGE:U:U
+      vm_mem_size             value:GAUGE:U:U
+      vm_mem_usage            value:GAUGE:U:U
+      vm_mem_shortage         value:GAUGE:U:U
+
+
+- name: collectd bug fix
+    lineinfile:
+      path: /etc/default/collectd
+      line: LD_PRELOAD=/usr/lib/python3.8/config-3.8-x86_64-linux-gnu/libpython3.8.so
+      insertbefore: EOF
+
 
 - name: restart collectd
   ansible.builtin.systemd:

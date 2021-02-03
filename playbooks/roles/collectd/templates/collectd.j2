@@ -23,7 +23,12 @@ LoadPlugin python
     <Module vm_cpu>
         Path "/proc/stat" 
     </Module>
+    Import "vm_mem"
+    <Module vm_mem>
+        Path "/proc/meminfo"
+    </Module>
 </Plugin>
+
 <Plugin logfile>
     LogLevel "info"
         File "/var/log/collectd.log"
@@ -35,6 +40,7 @@ LoadPlugin python
 <Plugin network>
         Server {{ telegraf_server }} {{ telegraf_server_port }}
 </Plugin>
+
 <Plugin cpu>
         ReportByCpu false
         ReportByState false
