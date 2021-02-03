@@ -35,7 +35,7 @@
 - name: create vm_disk plugin
   template:
     src: vm_disk.j2
-    dest: /opt/collectd_plugins/vm_mem.py
+    dest: /opt/collectd_plugins/vm_disk.py
 
 
 - name: add vm_cpu_* types to types.db

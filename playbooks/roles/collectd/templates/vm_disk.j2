@@ -34,6 +34,7 @@ def read_func():
     sys_name = 0
 
     type_map = {{ disk_type_map }}
+    disk_names = {}
 
     with open('/proc/mounts', 'r') as f:
         for line in f.read().split('\n'):
@@ -48,15 +49,18 @@ def read_func():
                         sys_type = type_map.get(key)
                         break
 
-                sys_name = 'disk_' + re.findall(r"\d+", sys_arr[0])[-1]
+                sys_name = re.findall(r'[a-z]+', sys_arr[0])[-1]
+
+                if disk_names.get(sys_name) is None:
+                    disk_names[sys_name] = 'disk' + f'{len(disk_names) + 1}'
 
                 collectd.Values(plugin='vm_disk',
-                    type_instance=sys_name,
+                    type_instance=disk_names[sys_name],
                     type=f'{sys_type}_disk_size',
                     values=[sys_size]).dispatch()
 
                 collectd.Values(plugin='vm_disk',
-                    type_instance=sys_name,
+                    type_instance=disk_names[sys_name],
                     type=f'{sys_type}_disk_usage',
                     values=[sys_usage]).dispatch()
 
