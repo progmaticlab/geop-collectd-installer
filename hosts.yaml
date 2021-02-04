@@ -10,5 +10,4 @@ all:
         telegraf_server_port: '"25826"'
         vm_id: 'vm_id_'
         tenant_id: 'tenant_id_'
-        disk_type_map: {'.*sda.*': 'ssd', '.*sdb.*': 'sata', '.*': 'hdd'}
 

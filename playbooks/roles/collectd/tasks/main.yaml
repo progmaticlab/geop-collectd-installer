@@ -15,6 +15,7 @@
     src: collectd.j2
     dest: /etc/collectd/collectd.conf
 
+
 - name: create /opt/collectd_plugins
   ansible.builtin.file:
     path: /opt/collectd_plugins
@@ -26,6 +27,16 @@
     path: /opt/collectd_plugins
     state: directory
     mode: '0755'
+
+- name: create fs_type_instance.json
+  ansible.builtin.file:
+    path: /opt/collectd_plugins/dict/fs_type_instance.json
+    state: touch
+
+- name: create fs_type_map.json
+  copy:
+    src: fs_type_map.json
+    dest: /opt/collectd_plugins/dict/fs_type_map.json
 
 
 - name: create vm_cpu plugin
@@ -39,9 +50,10 @@
     dest: /opt/collectd_plugins/vm_mem.py
 
 - name: create vm_disk plugin
-  template:
-    src: vm_disk.j2
+  copy:
+    src: vm_disk.py
     dest: /opt/collectd_plugins/vm_disk.py
+
 
 - name: add vm_cpu_* types to types.db
   blockinfile:
