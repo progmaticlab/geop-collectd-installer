@@ -28,7 +28,7 @@ def read_func():
     sys_str = ''
     sys_size = 0
     sys_usage = 0
-    GB = 1024**2
+    GB = float(1024**2)
 
     sys_type = 0
     sys_name = 0
@@ -56,8 +56,8 @@ def read_func():
             sys_arr = line.split()
             if len(sys_arr) and sys_arr[2] not in ignore_fs:
                 sys_str = os.statvfs(sys_arr[1])
-                sys_size = (sys_str.f_bsize * sys_str.f_blocks) / GB
-                sys_usage = (sys_str.f_blocks - sys_str.f_bfree) / GB
+                sys_size = float(sys_str.f_bsize * sys_str.f_blocks) / GB
+                sys_usage = float(sys_str.f_blocks - sys_str.f_bfree) / GB
 
                 for key in type_map.keys():
                     if re.search(key, sys_arr[0]):

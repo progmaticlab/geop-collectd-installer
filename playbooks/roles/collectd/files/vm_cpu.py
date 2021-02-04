@@ -34,8 +34,8 @@ def read_func():
             if re.search(r'^cpu  *', line):
                 cpu_array = list(map(int, line.replace("cpu","").split()))
                 total = sum(cpu_array)
-                cpu_usage = (total - cpu_array[3]) / total
-                cpu_steal = cpu_array[7] / total
+                cpu_usage = float(total - cpu_array[3]) / float(total)
+                cpu_steal = float(cpu_array[7]) / float(total)
 
     
     # cpu core count 
