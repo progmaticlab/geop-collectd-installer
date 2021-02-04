@@ -1,20 +1,18 @@
 import collectd
 import re
 
+
 def config_func(config):
     path_set = False
-
     for node in config.children:
         key = node.key.lower()
         val = node.values[0]
-
         if key == 'path':
             global PATH
             PATH = val
             path_set = True
         else:
             collectd.info('vm_cpu plugin: Unknown config key "%s"' % key)
-
     if path_set:
         collectd.info('vm_cpu plugin: Using overridden path %s' % PATH)
     else:
@@ -22,7 +20,6 @@ def config_func(config):
 
 
 def read_func():
-    # count
     count = 0 
     cpu_usage = 0
     cpu_steal = 0
@@ -32,23 +29,22 @@ def read_func():
             if re.search(r'^cpu[0-9][0-9]*', line):
                 count += 1
             if re.search(r'^cpu  *', line):
-                cpu_array = list(map(int, line.replace("cpu","").split()))
+                cpu_array = list(map(int, line.replace('cpu','').split()))
                 total = sum(cpu_array)
                 cpu_usage = float(total - cpu_array[3]) / float(total)
                 cpu_steal = float(cpu_array[7]) / float(total)
-
-    
+ 
     # cpu core count 
     collectd.Values(plugin='vm_cpu',
-                    type="vm_cpu_num",
+                    type='vm_cpu_num',
                     values=[count]).dispatch()
     # overal cpu steal
     collectd.Values(plugin='vm_cpu',
-                    type="vm_cpu_shortage",
+                    type='vm_cpu_shortage',
                     values=[cpu_steal]).dispatch()
     # overal cpu usage
     collectd.Values(plugin='vm_cpu',
-                    type="vm_cpu_usage",
+                    type='vm_cpu_usage',
                     values=[cpu_usage]).dispatch()
 
 

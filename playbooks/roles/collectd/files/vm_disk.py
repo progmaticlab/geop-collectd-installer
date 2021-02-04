@@ -3,20 +3,18 @@ import re
 import os
 import json
 
+
 def config_func(config):
     path_set = False
-
     for node in config.children:
         key = node.key.lower()
         val = node.values[0]
-
         if key == 'path':
             global PATH
             PATH = val
             path_set = True
         else:
             collectd.info('vm_disk plugin: Unknown config key "%s"' % key)
-
     if path_set:
         collectd.info('vm_disk plugin: Using overridden path %s' % PATH)
     else:
@@ -24,76 +22,83 @@ def config_func(config):
 
 
 def read_func():
-    sys_arr = []
-    sys_str = ''
-    sys_size = 0
-    sys_usage = 0
     GB = float(1024**2)
-
-    sys_type = 0
-    sys_name = 0
-
-    type_map = {}
-    tmp_data = {}
-    tmp_data_key = 0
-
     ignore_fs = ["tmpfs", "devtmpfs", "devfs", "iso9660", "overlay", "aufs", "squashfs",
                 "cgroup", "cgroup2", "autofs", "proc", "sysfs", "bpf", "devpts", "securityfs",
                 "pstore", "efivarfs", "hugetlbfs", "mqueue", "debugfs", "tracefs", "fusectl", 
                 "configfs", "binfmt_misc", "fuse.gvfsd-fuse"]
 
-    fs_type_map = '/opt/collectd_plugins/dict/fs_type_map.json'
-    fs_type_instance = '/opt/collectd_plugins/dict/fs_type_instance.json'
+    disk_type_map_path = '/opt/collectd_plugins/dict/disk_type_map.json'
+    disk_type_map = {}
+    disk_type_instance_data_path = '/opt/collectd_plugins/dict/disk_type_instance_data.json'
+    disk_type_instance_data = {}
 
-    if os.stat(fs_type_map).st_size > 1:
-        with open(fs_type_map, 'r') as f:
-            type_map = json.load(f)
+    fs_data_array = []      # for ex. ['/dev/sda2', '/', 'ext4', ...]
+    fs_data_struct = {}     # for ex. os.statvfs('/')
+    fs_size = 0             # for ex. sda2 size
+    fs_usage = 0            # for ex. sda2 usage
+    disk_name = ''          # sda, sdb etc.
+    disk_type = ''          # ssd | hdd | sata
+    disk_names = {}         # {sda: disk1, sdb: disk2, xdb: disk3 ...}
+    cur_disk_num = ''       # disk1 | disk2 | disk3 ...
+    disks_data = {}         # {disk1: {sda_data}, disk2: {sdb_data}..}
+
+    if os.stat(disk_type_map_path).st_size > 1:
+        with open(disk_type_map_path, 'r') as f:
+            disk_type_map = json.load(f)
     else:
-        type_map = {'.*': 'sata'}
+        disk_type_map = {'.*': 'sata'}
 
     with open('/proc/mounts', 'r') as f:
+        disks_data = {}
         for line in f.read().split('\n'):
-            sys_arr = line.split()
-            if len(sys_arr) and sys_arr[2] not in ignore_fs:
-                sys_str = os.statvfs(sys_arr[1])
-                sys_size = float(sys_str.f_bsize * sys_str.f_blocks) / GB
-                sys_usage = float(sys_str.f_blocks - sys_str.f_bfree) / GB
+            fs_data_array = line.split()
+            
+            if not len(fs_data_array) or fs_data_array[2] in ignore_fs:
+                continue
 
-                for key in type_map.keys():
-                    if re.search(key, sys_arr[0]):
-                        sys_type = type_map.get(key)
-                        break
-
-                sys_name = re.findall(r'[a-z]+', sys_arr[0])[-1]
-                with open(fs_type_instance, 'r+') as d:
-                    disk_names = {}
-                    if d.tell() > 0:
-                        disk_names = json.load(d)
-                    if disk_names.get(sys_name) is None:
-                        disk_names[sys_name] = 'disk' + f'{len(disk_names) + 1}'
-                        json.dump(disk_names, d)
-                        d.truncate(len(json.dumps(disk_names)))
-                    tmp_data_key = disk_names[sys_name]
+            fs_data_struct = os.statvfs(fs_data_array[1])
+            fs_size = float(fs_data_struct.f_bsize * fs_data_struct.f_blocks) / GB
+            fs_usage = float(fs_data_struct.f_blocks - fs_data_struct.f_bfree) / GB
                 
-                if tmp_data.get(tmp_data_key) is None:
-                    tmp_data[tmp_data_key] = {'type': sys_type, 'disk_size': 0, 'disk_usage': 0}
+            disk_name = re.findall(r'[a-z]+', fs_data_array[0])[-1]
 
-                tmp_data[tmp_data_key]['disk_size'] += sys_size
-                tmp_data[tmp_data_key]['disk_usage'] += sys_usage
+            for key in type_map.keys():
+                if re.search(key, disk_name):
+                    disk_type = disk_type_map.get(key)
+                    break
 
-    for key in tmp_data.keys():
+            with open(disk_type_instance_data_path, 'r+') as d:
+                disk_type_instance_data = {}
+                if os.stat(disk_type_instance_data_path).st_size > 1:
+                    disk_type_instance_data = json.load(d)
+                if disk_type_instance_data.get(disk_name) is None:
+                    disk_type_instance_data[disk_name] = 'disk' + f'{len(disk_names) + 1}'
+                    json.dump(type_instance_data, d)
+                    d.truncate(len(json.dumps(type_instance_data)))
+                cur_disk_num = type_instance_data[disk_name]
+                
+            # accumulate different fs data
+            if disks_data.get(cur_disk_num) is None:
+                disks_data[cur_disk_num] = {'type': disk_type, 'disk_size': 0, 'disk_usage': 0}
+
+            disks_data[cur_disk_num]['disk_size'] += fs_size
+            disks_data[cur_disk_num]['disk_usage'] += fs_usage
+
+    for disk in disks_data.keys():
+        cur_disk_data = disks_data[disk]
+        # vm disk fs size
         collectd.Values(plugin = 'vm_disk',
-                    type_instance = key,
-                    type = f'{tmp_data[key].get("type")}_disk_usage',
-                    values = [tmp_data[key].get('disk_usage')]).dispatch()
-
+                    type_instance = disk,
+                    type = f'{cur_disk_data.get("type")}_disk_size',
+                    values = [cur_disk_data.get('disk_size')]).dispatch()
+        # vm disk fs usage
         collectd.Values(plugin = 'vm_disk',
-                    type_instance = key,
-                    type = f'{tmp_data[key].get("type")}_disk_size',
-                    values = [tmp_data[key].get('disk_size')]).dispatch()
+                    type_instance = disk,
+                    type = f'{cur_disk_data.get("type")}_disk_usage',
+                    values = [cur_disk_data.get('disk_usage')]).dispatch()
 
 
 collectd.register_config(config_func)
 collectd.register_read(read_func)
-
 
