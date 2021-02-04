@@ -2,7 +2,7 @@ import collectd
 import re
 import os
 import json
-
+import math
 
 def config_func(config):
     path_set = False
@@ -19,6 +19,11 @@ def config_func(config):
         collectd.info('vm_disk plugin: Using overridden path %s' % PATH)
     else:
         collectd.info('vm_disk plugin: Using default path %s' % PATH)
+
+
+def truncate(number, digits):
+    stepper = float(10.0 ** digits)
+    return float(math.trunc(stepper * number) / stepper)
 
 
 def read_func():
@@ -92,12 +97,12 @@ def read_func():
         collectd.Values(plugin = 'vm_disk',
                     type_instance = disk,
                     type = cur_disk_data.get('type') + '_disk_size',
-                    values = [cur_disk_data.get('disk_size')]).dispatch()
+                    values = [truncate(cur_disk_data.get('disk_size'), 6)]).dispatch()
         # vm disk fs usage
         collectd.Values(plugin = 'vm_disk',
                     type_instance = disk,
                     type = cur_disk_data.get('type') + '_disk_usage',
-                    values = [cur_disk_data.get('disk_usage')]).dispatch()
+                    values = [truncate(cur_disk_data.get('disk_usage'), 6)]).dispatch()
 
 
 collectd.register_config(config_func)

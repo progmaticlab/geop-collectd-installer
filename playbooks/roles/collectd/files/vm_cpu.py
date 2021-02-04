@@ -1,6 +1,8 @@
 import collectd
 import re
 import time
+import math
+
 
 def config_func(config):
     path_set = False
@@ -18,6 +20,9 @@ def config_func(config):
     else:
         collectd.info('vm_cpu plugin: Using default path %s' % PATH)
 
+def truncate(number, digits):
+    stepper = float(10.0 ** digits)
+    return float(math.trunc(stepper * number) / stepper)
 
 def read_func():
     count = 0 
@@ -52,11 +57,11 @@ def read_func():
     # overal cpu steal
     collectd.Values(plugin='vm_cpu',
                     type='vm_cpu_shortage',
-                    values=[cpu_steal]).dispatch()
+                    values=[truncate(cpu_steal, 6)]).dispatch()
     # overal cpu usage
     collectd.Values(plugin='vm_cpu',
                     type='vm_cpu_usage',
-                    values=[cpu_usage]).dispatch()
+                    values=[truncate(cpu_usage, 6)]).dispatch()
 
 
 collectd.register_config(config_func)
