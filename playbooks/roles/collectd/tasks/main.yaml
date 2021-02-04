@@ -21,6 +21,12 @@
     state: directory
     mode: '0755'
 
+- name: create /opt/collectd_plugins/dict
+  ansible.builtin.file:
+    path: /opt/collectd_plugins
+    state: directory
+    mode: '0755'
+
 
 - name: create vm_cpu plugin
   copy:

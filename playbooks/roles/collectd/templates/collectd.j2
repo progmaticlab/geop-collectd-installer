@@ -2,7 +2,7 @@ Hostname "{{ vm_id }} {{ tenant_id }}"
 FQDNLookup true
 BaseDir "/var/lib/collectd"
 PluginDir "/usr/lib/collectd"
-TypesDB "/usr/share/collectd/types.db" "/etc/collectd/my_types.db"
+TypesDB "/usr/share/collectd/types.db"
 
 LoadPlugin logfile
 LoadPlugin syslog
