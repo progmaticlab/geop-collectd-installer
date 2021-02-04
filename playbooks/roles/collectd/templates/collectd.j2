@@ -45,49 +45,6 @@ LoadPlugin python
         Server {{ telegraf_server }} {{ telegraf_server_port }}
 </Plugin>
 
-<Plugin cpu>
-        ReportByCpu false
-        ReportByState false
-        ReportNumCpu true
-        ValuesPercentage true
-</Plugin>
-<Plugin df>
-	FSType rootfs
-	FSType sysfs
-	FSType proc
-	FSType devtmpfs
-	FSType devpts
-	FSType tmpfs
-	FSType fusectl
-	FSType cgroup
-	IgnoreSelected true
-</Plugin>
-<Plugin disk>
-	Disk "hda"
-	Disk "/sda[23]/"
-	IgnoreSelected false
-	UseBSDName false
-	UdevNameAttr "DEVNAME"
-</Plugin>
-<Plugin interface>
-	Interface "eth0"
-	IgnoreSelected false
-	ReportInactive true
-</Plugin>
-<Plugin load>
-	ReportRelative true
-</Plugin>
-<Plugin memory>
-	ValuesAbsolute true
-	ValuesPercentage false
-</Plugin>
-<Plugin swap>
-	ReportByDevice false
-	ReportBytes true
-	ValuesAbsolute true
-	ValuesPercentage false
-	ReportIO true
-</Plugin>
 <Include "/etc/collectd/collectd.conf.d">
 	Filter "*.conf"
 </Include>
