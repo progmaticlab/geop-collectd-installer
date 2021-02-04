@@ -28,15 +28,15 @@
     state: directory
     mode: '0755'
 
-- name: create fs_type_instance.json
+- name: create disk_type_instance_data.json
   ansible.builtin.file:
-    path: /opt/collectd_plugins/dict/fs_type_instance.json
+    path: /opt/collectd_plugins/dict/disk_type_instance_data.json
     state: touch
 
-- name: create fs_type_map.json
+- name: create disk_type_map.json
   copy:
-    src: fs_type_map.json
-    dest: /opt/collectd_plugins/dict/fs_type_map.json
+    src: disk_type_map.json
+    dest: /opt/collectd_plugins/dict/disk_type_map.json
 
 
 - name: create vm_cpu plugin

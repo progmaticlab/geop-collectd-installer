@@ -10,4 +10,4 @@ ansible-playbook playbooks/install-collectd.yaml -i hosts.yaml
 ```
 
 
-fs type map in playbooks/roles/collectd/files/fs_type_map.json
+disk type map in playbooks/roles/collectd/files/disk_type_map.json
