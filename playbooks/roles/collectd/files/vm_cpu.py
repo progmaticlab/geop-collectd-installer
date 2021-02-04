@@ -1,6 +1,6 @@
 import collectd
 import re
-
+import time
 
 def config_func(config):
     path_set = False
@@ -23,17 +23,28 @@ def read_func():
     count = 0 
     cpu_usage = 0
     cpu_steal = 0
-    cpu_array = []
+    cpu_array_1 = []
+    cpu_array_2 = []
+    total = 0
+    with open('/proc/stat', 'r') as f:
+        for line in f.read().split('\n'):
+            if re.search(r'^cpu  *', line):
+                cpu_array_1 = list(map(int, line.replace('cpu','').split()))
+                break
+
+    time.sleep(3)
+
     with open('/proc/stat', 'r') as f:
         for line in f.read().split('\n'):
             if re.search(r'^cpu[0-9][0-9]*', line):
                 count += 1
             if re.search(r'^cpu  *', line):
-                cpu_array = list(map(int, line.replace('cpu','').split()))
-                total = sum(cpu_array)
-                cpu_usage = float(total - cpu_array[3]) / float(total)
-                cpu_steal = float(cpu_array[7]) / float(total)
- 
+                cpu_array_2 = list(map(int, line.replace('cpu','').split()))
+
+    total = float(sum(cpu_array_2) - sum(cpu_array_1))
+    cpu_usage = float(total - cpu_array_2[3] + cpu_array_1[3]) / total
+    cpu_steal = float(cpu_array_2[7] - cpu_array_1[7]) / total
+
     # cpu core count 
     collectd.Values(plugin='vm_cpu',
                     type='vm_cpu_num',

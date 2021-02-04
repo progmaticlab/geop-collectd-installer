@@ -22,11 +22,11 @@ def config_func(config):
 
 
 def read_func():
-    GB = float(1024**2)
+    MB = float(1024**2)
     ignore_fs = ["tmpfs", "devtmpfs", "devfs", "iso9660", "overlay", "aufs", "squashfs",
                 "cgroup", "cgroup2", "autofs", "proc", "sysfs", "bpf", "devpts", "securityfs",
                 "pstore", "efivarfs", "hugetlbfs", "mqueue", "debugfs", "tracefs", "fusectl", 
-                "configfs", "binfmt_misc", "fuse.gvfsd-fuse"]
+                "configfs", "binfmt_misc", "fuse.gvfsd-fuse", "fuse.lxcfs", "nsfs"]
 
     disk_type_map_path = '/opt/collectd_plugins/dict/disk_type_map.json'
     disk_type_map = {}
@@ -58,8 +58,8 @@ def read_func():
                 continue
 
             fs_data_struct = os.statvfs(fs_data_array[1])
-            fs_size = float(fs_data_struct.f_bsize * fs_data_struct.f_blocks) / GB
-            fs_usage = float(fs_data_struct.f_blocks - fs_data_struct.f_bfree) / GB
+            fs_size = float(fs_data_struct.f_bsize * fs_data_struct.f_blocks) / MB
+            fs_usage = float(fs_data_struct.f_bsize) * float(fs_data_struct.f_blocks - fs_data_struct.f_bfree) / MB
                 
             disk_name = re.findall(r'[a-z]+', fs_data_array[0])[-1]
 
@@ -74,6 +74,7 @@ def read_func():
                     disk_type_instance_data = json.load(d)
                 if disk_type_instance_data.get(disk_name) is None:
                     disk_type_instance_data[disk_name] = 'disk' + str(len(disk_type_instance_data) + 1)
+                    d.seek(0)
                     json.dump(disk_type_instance_data, d)
                     d.truncate(len(json.dumps(disk_type_instance_data)))
                 cur_disk_num = disk_type_instance_data[disk_name]
