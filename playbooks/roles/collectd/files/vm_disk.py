@@ -63,7 +63,7 @@ def read_func():
                 
             disk_name = re.findall(r'[a-z]+', fs_data_array[0])[-1]
 
-            for key in type_map.keys():
+            for key in disk_type_map.keys():
                 if re.search(key, disk_name):
                     disk_type = disk_type_map.get(key)
                     break
@@ -73,10 +73,10 @@ def read_func():
                 if os.stat(disk_type_instance_data_path).st_size > 1:
                     disk_type_instance_data = json.load(d)
                 if disk_type_instance_data.get(disk_name) is None:
-                    disk_type_instance_data[disk_name] = 'disk' + f'{len(disk_names) + 1}'
-                    json.dump(type_instance_data, d)
-                    d.truncate(len(json.dumps(type_instance_data)))
-                cur_disk_num = type_instance_data[disk_name]
+                    disk_type_instance_data[disk_name] = 'disk' + str(len(disk_type_instance_data) + 1)
+                    json.dump(disk_type_instance_data, d)
+                    d.truncate(len(json.dumps(disk_type_instance_data)))
+                cur_disk_num = disk_type_instance_data[disk_name]
                 
             # accumulate different fs data
             if disks_data.get(cur_disk_num) is None:
@@ -90,12 +90,12 @@ def read_func():
         # vm disk fs size
         collectd.Values(plugin = 'vm_disk',
                     type_instance = disk,
-                    type = f'{cur_disk_data.get("type")}_disk_size',
+                    type = cur_disk_data.get('type') + '_disk_size',
                     values = [cur_disk_data.get('disk_size')]).dispatch()
         # vm disk fs usage
         collectd.Values(plugin = 'vm_disk',
                     type_instance = disk,
-                    type = f'{cur_disk_data.get("type")}_disk_usage',
+                    type = cur_disk_data.get('type') + '_disk_usage',
                     values = [cur_disk_data.get('disk_usage')]).dispatch()
 
 

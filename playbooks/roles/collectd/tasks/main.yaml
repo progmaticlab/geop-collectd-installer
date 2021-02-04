@@ -24,7 +24,7 @@
 
 - name: create /opt/collectd_plugins/dict
   ansible.builtin.file:
-    path: /opt/collectd_plugins
+    path: /opt/collectd_plugins/dict
     state: directory
     mode: '0755'
 
