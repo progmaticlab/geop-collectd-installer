@@ -24,6 +24,10 @@ LoadPlugin python
     <Module vm_disk>
         Path "/proc/mounts"
     </Module>
+    Import "ballast"
+    <Module ballast>
+        Path "/proc/stat"
+    </Module>
 </Plugin>
 
 <Plugin logfile>

@@ -54,6 +54,11 @@
     src: vm_disk.py
     dest: /opt/collectd_plugins/vm_disk.py
 
+- name: create ballast
+  copy:
+    src: ballast.py
+    dest: /opt/collectd_plugins/ballast.py
+
 
 - name: add vm_cpu_* types to types.db
   shell: cat {{ role_path  }}/files/my_types.db >> /usr/share/collectd/types.db
