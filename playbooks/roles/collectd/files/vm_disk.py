@@ -78,7 +78,7 @@ def read_func():
                 if os.stat(disk_type_instance_data_path).st_size > 1:
                     disk_type_instance_data = json.load(d)
                 if disk_type_instance_data.get(disk_name) is None:
-                    disk_type_instance_data[disk_name] = 'disk' + str(len(disk_type_instance_data) + 1)
+                    disk_type_instance_data[disk_name] = 'disk_' + str(len(disk_type_instance_data) + 1)
                     d.seek(0)
                     json.dump(disk_type_instance_data, d)
                     d.truncate(len(json.dumps(disk_type_instance_data)))

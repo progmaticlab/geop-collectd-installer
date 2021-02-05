@@ -53,14 +53,17 @@ def read_func():
     # cpu core count 
     collectd.Values(plugin='vm_cpu',
                     type='vm_cpu_num',
+                    type_instance='cpu_0',
                     values=[count]).dispatch()
     # overal cpu steal
     collectd.Values(plugin='vm_cpu',
                     type='vm_cpu_shortage',
+                    type_instance='cpu_0',
                     values=[truncate(cpu_steal, 6)]).dispatch()
     # overal cpu usage
     collectd.Values(plugin='vm_cpu',
                     type='vm_cpu_usage',
+                    type_instance='cpu_0',
                     values=[truncate(cpu_usage, 6)]).dispatch()
 
 

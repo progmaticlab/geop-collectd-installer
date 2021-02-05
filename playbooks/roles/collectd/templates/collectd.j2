@@ -1,8 +1,9 @@
-Hostname "{{ vm_id }} {{ tenant_id }}"
-FQDNLookup true
+Hostname "{{ ansible_hostname }} {{ vm_id }} {{ tenant_id }}"
+FQDNLookup false
 BaseDir "/var/lib/collectd"
 PluginDir "/usr/lib/collectd"
 TypesDB "/usr/share/collectd/types.db"
+Interval 60
 
 LoadPlugin logfile
 LoadPlugin syslog
