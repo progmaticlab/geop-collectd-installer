@@ -56,47 +56,14 @@
 
 
 - name: add vm_cpu_* types to types.db
-  blockinfile:
-    path: /usr/share/collectd/types.db
-    insertafter: EOF
-    block: |
-      ####
-      vm_cpu_num              value:GAUGE:0:U
-      vm_cpu_usage            value:GAUGE:U:U
-      vm_cpu_shortage         value:GAUGE:U:U
-      ####
-      vm_mem_size             value:GAUGE:U:U
-      vm_mem_usage            value:GAUGE:U:U
-      vm_mem_shortage         value:GAUGE:U:U
-      ####
-      ssd_disk_size            value:GAUGE:U:U
-      ssd_disk_throughput      value:GAUGE:U:U
-      ssd_disk_iops            value:GAUGE:U:U
-      ssd_disk_latency         value:GAUGE:U:U
-      ssd_disk_usage           value:GAUGE:U:U
-      hdd_disk_size            value:GAUGE:U:U
-      hdd_disk_throughput      value:GAUGE:U:U
-      hdd_disk_iops            value:GAUGE:U:U
-      hdd_disk_latency         value:GAUGE:U:U
-      hdd_disk_usage           value:GAUGE:U:U
-      sata_disk_size            value:GAUGE:U:U
-      sata_disk_throughput      value:GAUGE:U:U
-      sata_disk_iops            value:GAUGE:U:U
-      sata_disk_latency         value:GAUGE:U:U
-      sata_disk_usage           value:GAUGE:U:U
-      ####
-      vm_net_input_rate           value:GAUGE:U:U
-      vm_net_output_rate          value:GAUGE:U:U
-      vm_net_input_rate_provided  value:GAUGE:U:U
-      vm_net_output_rate_provided value:GAUGE:U:U
-
+  shell: cat {{ role_path  }}/files/my_types.db >> /usr/share/collectd/types.db
 
 - name: collectd bug fix
   blockinfile:
     path: /etc/default/collectd
     insertafter: EOF
     block: 'LD_PRELOAD=/usr/lib/python3.8/config-3.8-x86_64-linux-gnu/libpython3.8.so'
-      
+
 - name: restart collectd
   ansible.builtin.systemd:
     state: restarted
