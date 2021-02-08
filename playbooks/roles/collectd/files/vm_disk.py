@@ -25,6 +25,11 @@ def truncate(number, digits):
     stepper = float(10.0 ** digits)
     return float(math.trunc(stepper * number) / stepper)
 
+def json_load(path, none_str):
+    if os.stat(path).st_size > 1:
+        with open(path, 'r') as f:
+            return json.load(f)
+    return none_str
 
 def read_func():
     MB = float(1024**2)
@@ -34,9 +39,7 @@ def read_func():
                 "configfs", "binfmt_misc", "fuse.gvfsd-fuse", "fuse.lxcfs", "nsfs"]
 
     disk_type_map_path = '/opt/collectd_plugins/dict/disk_type_map.json'
-    disk_type_map = {}
-    disk_type_instance_data_path = '/opt/collectd_plugins/dict/disk_type_instance_data.json'
-    disk_type_instance_data = {}
+    disk_type_instance_path = '/opt/collectd_plugins/dict/disk_type_instance.json'
 
     fs_data_array = []      # for ex. ['/dev/sda2', '/', 'ext4', ...]
     fs_data_struct = {}     # for ex. os.statvfs('/')
@@ -48,11 +51,9 @@ def read_func():
     cur_disk_num = ''       # disk1 | disk2 | disk3 ...
     disks_data = {}         # {disk1: {sda_data}, disk2: {sdb_data}..}
 
-    if os.stat(disk_type_map_path).st_size > 1:
-        with open(disk_type_map_path, 'r') as f:
-            disk_type_map = json.load(f)
-    else:
-        disk_type_map = {'.*': 'sata'}
+
+    disk_type_map = json_load(disk_type_map_path, {'.*': 'sata'})
+    disk_type_instance = json_load(disk_type_instance_path, {})
 
     with open('/proc/mounts', 'r') as f:
         disks_data = {}
@@ -73,23 +74,15 @@ def read_func():
                     disk_type = disk_type_map.get(key)
                     break
 
-            with open(disk_type_instance_data_path, 'r+') as d:
-                disk_type_instance_data = {}
-                if os.stat(disk_type_instance_data_path).st_size > 1:
-                    disk_type_instance_data = json.load(d)
-                if disk_type_instance_data.get(disk_name) is None:
-                    disk_type_instance_data[disk_name] = 'disk_' + str(len(disk_type_instance_data) + 1)
-                    d.seek(0)
-                    json.dump(disk_type_instance_data, d)
-                    d.truncate(len(json.dumps(disk_type_instance_data)))
-                cur_disk_num = disk_type_instance_data[disk_name]
-                
-            # accumulate different fs data
-            if disks_data.get(cur_disk_num) is None:
-                disks_data[cur_disk_num] = {'type': disk_type, 'disk_size': 0, 'disk_usage': 0}
+            cur_disk_num = disk_type_instance.get(disk_name)
 
-            disks_data[cur_disk_num]['disk_size'] += fs_size
-            disks_data[cur_disk_num]['disk_usage'] += fs_usage
+            # accumulate different fs data
+            if cur_disk_num is not None:
+                if disks_data.get(cur_disk_num) is None:
+                    disks_data[cur_disk_num] = {'type': disk_type, 'disk_size': 0, 'disk_usage': 0}
+
+                disks_data[cur_disk_num]['disk_size'] += fs_size
+                disks_data[cur_disk_num]['disk_usage'] += fs_usage
 
     for disk in disks_data.keys():
         cur_disk_data = disks_data[disk]

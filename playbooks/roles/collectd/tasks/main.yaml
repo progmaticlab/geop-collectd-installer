@@ -28,13 +28,13 @@
     state: directory
     mode: '0755'
 
-- name: create disk_type_instance_data.json
-  ansible.builtin.file:
-    path: /opt/collectd_plugins/dict/disk_type_instance_data.json
-    state: touch
+- name: create disk_type_instance.json
+  template:
+    src: disk_type_instance.json
+    dest: /opt/collectd_plugins/dict/disk_type_instance.json
 
 - name: create disk_type_map.json
-  copy:
+  template:
     src: disk_type_map.json
     dest: /opt/collectd_plugins/dict/disk_type_map.json
 
