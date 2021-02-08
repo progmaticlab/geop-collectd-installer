@@ -37,12 +37,12 @@ def read_func():
 
     # vm memory size
     collectd.Values(plugin='vm_mem',
-                    type='vm_mem_size',
+                    type='mem_size',
                     type_instance='memory_0',
                     values=[mem_size]).dispatch()
     # overal memory usage
     collectd.Values(plugin='vm_mem',
-                    type='vm_mem_usage',
+                    type='mem_usage',
                     type_instance='memory_0',
                     values=[mem_usage]).dispatch()
 

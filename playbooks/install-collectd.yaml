@@ -2,6 +2,7 @@
 
 - name: setup collectd
   hosts: collectd
+  become: true
   gather_facts: yes
   roles:
     - collectd

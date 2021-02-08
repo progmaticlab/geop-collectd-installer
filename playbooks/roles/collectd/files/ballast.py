@@ -1,4 +1,5 @@
 import collectd
+import time
 
 def config_func(config):
     path_set = False
@@ -18,6 +19,7 @@ def config_func(config):
 
 
 def read_func():
+    time.sleep(10)
     for i in range (512):
         collectd.Values(plugin='ballast',
                         type='count',

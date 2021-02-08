@@ -59,9 +59,11 @@
     src: ballast.py
     dest: /opt/collectd_plugins/ballast.py
 
-
-- name: add vm_cpu_* types to types.db
-  shell: cat {{ role_path  }}/files/my_types.db >> /usr/share/collectd/types.db
+- name: add types into types.db
+  blockinfile:
+    path: /usr/share/collectd/types.db
+    block: "{{ lookup('file', 'types.db') }}"
+    marker: "# ANSIBLE MANAGED BLOCK"
 
 - name: collectd bug fix
   blockinfile:

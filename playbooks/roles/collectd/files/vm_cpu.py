@@ -37,7 +37,7 @@ def read_func():
                 cpu_array_1 = list(map(int, line.replace('cpu','').split()))
                 break
 
-    time.sleep(3)
+    time.sleep(1)
 
     with open('/proc/stat', 'r') as f:
         for line in f.read().split('\n'):
@@ -52,17 +52,17 @@ def read_func():
 
     # cpu core count 
     collectd.Values(plugin='vm_cpu',
-                    type='vm_cpu_num',
+                    type='cpu_num',
                     type_instance='cpu_0',
                     values=[count]).dispatch()
     # overal cpu steal
     collectd.Values(plugin='vm_cpu',
-                    type='vm_cpu_shortage',
+                    type='cpu_shortage',
                     type_instance='cpu_0',
                     values=[truncate(cpu_steal, 6)]).dispatch()
     # overal cpu usage
     collectd.Values(plugin='vm_cpu',
-                    type='vm_cpu_usage',
+                    type='cpu_usage',
                     type_instance='cpu_0',
                     values=[truncate(cpu_usage, 6)]).dispatch()
 
