@@ -1,17 +1,15 @@
 
-1. завести две машины. возможные ОС:
+1. нужно завести джампхост. возможные ОС:
     Ubuntu 20 LTS / Ubuntu 18 LTS / Debian 9 / Debian 10 / CentOS 7 / CentOS 8
 
-2. установить git на обе машины
+2. установить git
     Ubuntu | Debian: sudo apt -y install git
     CentOS:          sudo yum -y install git
 
-3. установить ansible на обе машины
+3. установить ansible
     Ubuntu | Debian: sudo apt -y install ansible
     CentOS:          sudo yum -y install ansible
 
-
-на клиенте:
 
 a. клонировать geop-collectd-installer
     git clone https://github.com/progmaticlab/geop-collectd-installer.git
@@ -19,16 +17,16 @@ a. клонировать geop-collectd-installer
 b. запустить установку collectd
     cd geop-collectd-installer
     # выставить переменную telegraf_server [IP] в hosts.yaml
+    # и указать все хосты, куда надо установить collectd
     sudo ansible-playbook playbooks/install-collectd.yaml -i hosts.yaml
+    cd ..
 
-
-на сервере:
-
-a. клонировать geop-agent
+c. клонировать geop-agent
     git clone https://github.com/progmaticlab/geop-agent.git
 
-b. запустить установку telegraf
+d. запустить установку telegraf
     cd geop-agent
     # выставить переменную listen_at [IP] в hosts.yaml
+    # и указать хост, на который надо установить telegraf
     sudo ansible-playbook playbooks/install-telegraf.yaml -i hosts.yaml
 
