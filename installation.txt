@@ -1,0 +1,24 @@
+1. Ubuntu 20 LTS / Ubuntu 18 LTS / Debian 9 / Debian 10 / CentOS 7 / CentOS 8
+
+2. установить git
+    Ubuntu | Debian: sudo apt -y install git
+    CentOS:          sudo yum -y install git
+
+3. установить ansible
+    Ubuntu | Debian: sudo apt -y install ansible
+    CentOS:          sudo yum -y install ansible
+
+4. клонировать geop-collectd-installer и geop-agent
+    git clone https://github.com/progmaticlab/geop-collectd-installer.git
+    git clone https://github.com/progmaticlab/geop-agent.git
+
+5. запустить установку collectd
+    cd geop-collectd-installer
+    # отредактировать hosts.yaml под собственные нужды
+    sudo ansible-playbook playbooks/install-collectd.yaml -i hosts.yaml
+
+6. запустить установку telegraf
+    cd ../geop-agent
+    # отредактировать hosts.yaml под собственные нужды
+    sudo ansible-playbook playbooks/install-telegraf.yaml -i hosts.yaml
+
