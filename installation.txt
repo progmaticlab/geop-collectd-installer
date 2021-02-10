@@ -11,7 +11,7 @@
     CentOS:          sudo yum -y install ansible
 
 
-на сервере:
+на клиенте:
 
 a. клонировать geop-collectd-installer
     git clone https://github.com/progmaticlab/geop-collectd-installer.git
@@ -22,13 +22,13 @@ b. запустить установку collectd
     sudo ansible-playbook playbooks/install-collectd.yaml -i hosts.yaml
 
 
-на клиенте:
+на сервере:
 
 a. клонировать geop-agent
     git clone https://github.com/progmaticlab/geop-agent.git
 
 b. запустить установку telegraf
     cd geop-agent
-    # выставить переменную collectd_url [IP] в hosts.yam
+    # выставить переменную listen_ at [IP] в hosts.yaml
     sudo ansible-playbook playbooks/install-telegraf.yaml -i hosts.yaml
 
