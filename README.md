@@ -9,14 +9,14 @@
 1. установить git
 1. установить ansible (https://docs.ansible.com/ansible/latest/installation_guide/index.html)
 1. клонировать geop-collectd-installer
-```
+   ```
     git clone https://github.com/progmaticlab/geop-collectd-installer.git
     cd geop-collectd-installer
-```
+   ```
 1. Отредактировать hosts.yaml
- - добавить целевые хост для установки сборщика метрик
- - выставить нужные значения окружения для каждого из них (vm_id, tenant_id, agent_server, список дисков и их типов)
+   - добавить целевые хост для установки сборщика метрик
+   - выставить нужные значения окружения для каждого из них (vm_id, tenant_id, agent_server, список дисков и их типов)
 1. запустить установку collectd
-```
+   ```
     ansible-playbook playbooks/install-collectd.yaml -i hosts.yaml
-```
+   ```
