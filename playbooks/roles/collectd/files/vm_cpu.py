@@ -25,7 +25,7 @@ def truncate(number, digits):
     return float(math.trunc(stepper * number) / stepper)
 
 def read_func():
-    count = 0 
+    count = 0
     cpu_usage = 0
     cpu_steal = 0
     cpu_array_1 = []
@@ -50,7 +50,7 @@ def read_func():
     cpu_usage = float(total - cpu_array_2[3] + cpu_array_1[3]) / total
     cpu_steal = float(cpu_array_2[7] - cpu_array_1[7]) / total
 
-    # cpu core count 
+    # cpu core count
     collectd.Values(plugin='vm_cpu',
                     type='cpu_num',
                     type_instance='cpu_0',
@@ -59,12 +59,12 @@ def read_func():
     collectd.Values(plugin='vm_cpu',
                     type='cpu_shortage',
                     type_instance='cpu_0',
-                    values=[truncate(cpu_steal, 6)]).dispatch()
+                    values=[truncate(cpu_steal*100, 2)]).dispatch()
     # overal cpu usage
     collectd.Values(plugin='vm_cpu',
                     type='cpu_usage',
                     type_instance='cpu_0',
-                    values=[truncate(cpu_usage, 6)]).dispatch()
+                    values=[truncate(cpu_usage*100, 2)]).dispatch()
 
 
 collectd.register_config(config_func)
