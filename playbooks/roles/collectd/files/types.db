@@ -4,10 +4,10 @@ cpu_shortage         value:GAUGE:U:U
 mem_size             value:GAUGE:U:U
 mem_usage            value:GAUGE:U:U
 # mem_shortage         value:GAUGE:U:U
-ssd_disk_size            value:GAUGE:U:U
-ssd_disk_usage           value:GAUGE:U:U
-hdd_disk_size            value:GAUGE:U:U
-hdd_disk_usage           value:GAUGE:U:U
-sata_disk_size            value:GAUGE:U:U
-sata_disk_usage           value:GAUGE:U:U
+disk_size_ssd            value:GAUGE:U:U
+disk_usage_ssd           value:GAUGE:U:U
+disk_size_hdd            value:GAUGE:U:U
+disk_usage_hdd           value:GAUGE:U:U
+disk_size_sata            value:GAUGE:U:U
+disk_usage_sata           value:GAUGE:U:U
 
