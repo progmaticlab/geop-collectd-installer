@@ -1,63 +1,61 @@
 ---
 
-- name: install collectd
-  package:
-    name: collectd
-    state: present
+- name: install epel
+  yum:
+    name: epel-release
+  when: ansible_os_family=="RedHat"
 
-- name: install collectd-python
+- name: create /opt/collectd_plugins
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  with_items:
+    - /opt/collectd_plugins
+    - /opt/collectd_plugins/dict
+
+- name: create disk_type_instance.json
+  template:
+    src: "{{ item }}"
+    dest: "/opt/collectd_plugins/dict/{{ item }}"
+  with_items:
+    - disk_type_instance.json
+    - disk_type_map.json
+
+- name: create vm_cpu plugin
+  copy:
+    src: "{{ item }}"
+    dest: "/opt/collectd_plugins/{{ item }}"
+  with_items:
+    - vm_cpu.py
+    - vm_mem.py
+    - vm_disk.py
+    - ballast.py
+
+- name: install required packages 
   package:
-    name: collectd-utils
+    name: "{{ item }}"
     state: present
+  with_items:
+    - python-pip
+    - collectd
+
+- name: install python packages
+  pip:
+    name: collectd
+
+- name: find collectd.conf path
+  find:
+    file_type: file
+    paths: /etc
+    recurse: yes
+    patterns: "collectd.conf"
+  register: collectd_conf
 
 - name: create collectd.conf
   template:
     src: collectd.j2
-    dest: /etc/collectd/collectd.conf
-
-
-- name: create /opt/collectd_plugins
-  ansible.builtin.file:
-    path: /opt/collectd_plugins
-    state: directory
-    mode: '0755'
-
-- name: create /opt/collectd_plugins/dict
-  ansible.builtin.file:
-    path: /opt/collectd_plugins/dict
-    state: directory
-    mode: '0755'
-
-- name: create disk_type_instance.json
-  template:
-    src: disk_type_instance.json
-    dest: /opt/collectd_plugins/dict/disk_type_instance.json
-
-- name: create disk_type_map.json
-  template:
-    src: disk_type_map.json
-    dest: /opt/collectd_plugins/dict/disk_type_map.json
-
-
-- name: create vm_cpu plugin
-  copy:
-    src: vm_cpu.py
-    dest: /opt/collectd_plugins/vm_cpu.py
-
-- name: create vm_mem plugin
-  copy:
-    src: vm_mem.py
-    dest: /opt/collectd_plugins/vm_mem.py
-
-- name: create vm_disk plugin
-  copy:
-    src: vm_disk.py
-    dest: /opt/collectd_plugins/vm_disk.py
-
-- name: create ballast
-  copy:
-    src: ballast.py
-    dest: /opt/collectd_plugins/ballast.py
+    dest: "{{ collectd_conf.files[0].path }}"
 
 - name: add types into types.db
   blockinfile:
@@ -70,6 +68,8 @@
     path: /etc/default/collectd
     insertafter: EOF
     block: 'LD_PRELOAD=/usr/lib/python3.8/config-3.8-x86_64-linux-gnu/libpython3.8.so'
+  when:
+    - ansible_os_family=="Debian"
 
 - name: restart collectd
   ansible.builtin.systemd:

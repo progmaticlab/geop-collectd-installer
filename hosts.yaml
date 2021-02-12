@@ -2,13 +2,25 @@ all:
   hosts:
   children:
     collectd:
-      hosts:
-        127.0.0.1:
       vars:
-        ansible_connection: local
-        telegraf_server: '"localhost"'
-        telegraf_server_port: '"25826"'
-        vm_id: 'vm_id_'
-        tenant_id: 'tenant_id_'
-        disk_type_instance: '{"sda": "disk1", "vda": "disk2"}' 
-        disk_type_map: '{".*sda.*": "ssd", ".*sdb.*": "sata", ".*": "hdd"}'
+          telegraf_server: '"172.16.112.51"'
+          telegraf_port: '"25826"'
+      hosts:
+        172.16.112.52:
+          ansible_user: debian
+          vm_id: 'vm_id_1'
+          tenant_id: 'tenant_id_0'
+          disk_type_instance: '{"vda": "disk1"}' 
+          disk_type_map: '{".*vda.*": "ssd"}'
+        172.16.112.55:
+          ansible_user: debian
+          vm_id: 'vm_id_2'
+          tenant_id: 'tenant_id_0'
+          disk_type_instance: '{"vda": "disk1"}' 
+          disk_type_map: '{".*vda.*": "ssd"}'
+        185.62.103.127:
+          ansible_user: root
+          vm_id: 'vm_id_3'
+          tenant_id: 'tenant_id_0'
+          disk_type_instance: '{"vda": "disk1"}' 
+          disk_type_map: '{".*vda.*": "ssd"}'
