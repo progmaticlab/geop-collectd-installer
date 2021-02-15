@@ -33,6 +33,7 @@
           disk_type_instance: '{"vda": "disk1"}'
           disk_type_map: '{".*vda.*": "ssd"}'
    ```
+1. Пользователь debian из hosts.yaml (может быть любое имя пользователя) должен иметь возможность запуска команд с привилегиями суперпользователя (sudo) без ввода пароля. Доступ к целевому хосту по ssh для этого пользователя должен быть по ключу без пароля.
 1. запустить установку collectd
    ```
     ansible-playbook playbooks/install-collectd.yaml -i hosts.yaml
