@@ -16,6 +16,23 @@
 1. Отредактировать hosts.yaml
    - добавить целевые хост для установки сборщика метрик
    - выставить нужные значения окружения для каждого из них (vm_id, tenant_id, agent_server, список дисков и их типов)
+   ```
+   ...
+   
+     hosts:
+        172.16.112.52:
+          ansible_user: debian
+          vm_id: 'vm_id_1'
+          tenant_id: 'tenant_id_0'
+          disk_type_instance: '{"vda": "disk1"}'
+          disk_type_map: '{".*vda.*": "ssd"}'
+        172.16.112.55:
+          ansible_user: debian
+          vm_id: 'vm_id_2'
+          tenant_id: 'tenant_id_0'
+          disk_type_instance: '{"vda": "disk1"}'
+          disk_type_map: '{".*vda.*": "ssd"}'
+   ```
 1. запустить установку collectd
    ```
     ansible-playbook playbooks/install-collectd.yaml -i hosts.yaml
